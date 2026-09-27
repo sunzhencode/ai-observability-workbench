@@ -1,0 +1,1 @@
+"""Typed, bounded investigation domain."""

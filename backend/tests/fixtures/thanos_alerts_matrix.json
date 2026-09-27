@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "__name__": "ALERTS",
+          "alertname": "TargetDown",
+          "alertstate": "firing",
+          "severity": "warning",
+          "cluster": "cluster-a",
+          "job": "node-exporter"
+        },
+        "values": [
+          [1784160000, "0"],
+          [1784160060, "1"],
+          [1784160120, "1"]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "ALERTS",
+          "alertname": "NeverFired",
+          "alertstate": "pending",
+          "severity": "info"
+        },
+        "values": [[1784160000, "0"]]
+      }
+    ]
+  }
+}

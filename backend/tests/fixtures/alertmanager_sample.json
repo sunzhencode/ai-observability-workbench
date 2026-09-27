@@ -1,0 +1,57 @@
+[
+  {
+    "fingerprint": "aaa1111",
+    "labels": {
+      "alertname": "KubePodCrashLooping",
+      "severity": "critical",
+      "cluster": "cluster-a",
+      "namespace": "payments",
+      "pod": "api-7f9"
+    },
+    "annotations": {
+      "summary": "Pod is crash looping",
+      "runbook_url": "https://runbooks.example/kube-pod-crashlooping"
+    },
+    "startsAt": "2026-07-15T10:00:00Z",
+    "endsAt": "0001-01-01T00:00:00Z",
+    "status": {"state": "active"}
+  },
+  {
+    "fingerprint": "aaa2222",
+    "labels": {
+      "alertname": "KubePodCrashLooping",
+      "severity": "critical",
+      "cluster": "cluster-a",
+      "namespace": "payments",
+      "pod": "api-3c2"
+    },
+    "annotations": {"summary": "Pod is crash looping"},
+    "startsAt": "2026-07-15T10:02:00Z",
+    "endsAt": "0001-01-01T00:00:00Z",
+    "status": {"state": "active"}
+  },
+  {
+    "fingerprint": "bbb3333",
+    "labels": {
+      "alertname": "TargetDown",
+      "severity": "warning",
+      "cluster": "cluster-a",
+      "job": "node-exporter"
+    },
+    "annotations": {"summary": "Target is down"},
+    "startsAt": "2026-07-15T09:55:00Z",
+    "endsAt": "0001-01-01T00:00:00Z",
+    "status": {"state": "active"}
+  },
+  {
+    "fingerprint": "ccc4444",
+    "labels": {
+      "alertname": "HighLatency",
+      "severity": "info"
+    },
+    "annotations": {"summary": "Latency slightly elevated"},
+    "startsAt": "2026-07-15T09:48:00Z",
+    "endsAt": "0001-01-01T00:00:00Z",
+    "status": {"state": "active"}
+  }
+]

@@ -1,0 +1,181 @@
+{
+  "uid": "mysql-overview",
+  "title": "MySQL Overview",
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "cluster",
+        "type": "query",
+        "multi": true,
+        "current": {"text": ["prod-a"], "value": ["$__all", "prod-a"]}
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "multi": false,
+        "current": {"text": "10.0.0.5:9104", "value": "10.0.0.5:9104"}
+      },
+      {
+        "name": "DS_PROM",
+        "type": "datasource",
+        "current": {"text": "Prometheus", "value": "prom-uid"}
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Overview",
+      "collapsed": true,
+      "panels": [
+        {
+          "id": 2,
+          "type": "timeseries",
+          "title": "QPS",
+          "datasource": {"type": "prometheus", "uid": "prom-uid"},
+          "fieldConfig": {"defaults": {"unit": "reqps"}},
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "rate(mysql_global_status_questions{instance=\"$instance\"}[$__rate_interval])"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Connections",
+      "datasource": {"type": "prometheus", "uid": "prom-uid"},
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 500},
+              {"color": "red", "value": 800}
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mysql_global_status_threads_connected{cluster=\"$cluster\",instance=\"$instance\"}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Replication",
+      "datasource": {"type": "prometheus", "uid": "prom-uid"},
+      "targets": [
+        {
+          "refId": "A",
+          "legendFormat": "seconds behind",
+          "expr": "mysql_slave_status_seconds_behind_master"
+        },
+        {
+          "refId": "B",
+          "legendFormat": "io running",
+          "expr": "mysql_slave_status_slave_io_running"
+        },
+        {
+          "refId": "C",
+          "expr": "mysql_slave_status_slave_sql_running"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "Slow Queries",
+      "datasource": {"type": "prometheus", "uid": "prom-uid"},
+      "targets": [
+        {"refId": "A", "expr": "topk(10, mysql_global_status_slow_queries)"}
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Error Logs",
+      "datasource": {"type": "loki", "uid": "loki-uid"},
+      "targets": [
+        {"refId": "A", "expr": "{job=\"mysql\"} |= \"error\""}
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Connections At Window Start",
+      "datasource": {"type": "prometheus", "uid": "prom-uid"},
+      "targets": [
+        {"refId": "A", "expr": "mysql_global_status_threads_connected @ $__from"}
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Mixed Sources",
+      "datasource": {"type": "datasource", "uid": "-- Mixed --"},
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {"type": "prometheus", "uid": "prom-uid"},
+          "expr": "up{job=\"mysql\"}"
+        },
+        {
+          "refId": "B",
+          "datasource": {"type": "elasticsearch", "uid": "es-uid"},
+          "expr": "cluster_health:status"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "gauge",
+      "title": "Cache Hit Ratio",
+      "datasource": "${DS_PROM}",
+      "targets": [
+        {"refId": "A", "expr": "mysql_global_status_innodb_buffer_pool_read_requests"}
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Legacy Panel Without Datasource",
+      "targets": [
+        {"refId": "A", "expr": "mysql_up"}
+      ]
+    },
+    {
+      "id": 11,
+      "type": "text",
+      "title": "Notes",
+      "options": {"content": "Runbook lives in the wiki"}
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Slow Queries Over Range",
+      "datasource": {"type": "prometheus", "uid": "prom-uid"},
+      "fieldConfig": {"defaults": {"unit": "short"}},
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(mysql_global_status_slow_queries[$__range]))"
+        },
+        {
+          "refId": "B",
+          "expr": ""
+        }
+      ]
+    }
+  ]
+}

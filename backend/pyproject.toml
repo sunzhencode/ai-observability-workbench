@@ -1,0 +1,61 @@
+[project]
+name = "alert-workbench-backend"
+version = "0.1.0"
+description = "Local read-only alert operations workbench (M1)"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "httpx>=0.27",
+    "apscheduler>=3.10",
+    # 0.0.46 changes SQLite datetime handling; the legacy models and tests
+    # still require naive round-trips until their storage contract is migrated.
+    "sqlmodel==0.0.42",
+    "alembic>=1.16",
+    "pydantic-settings>=2.4",
+    "cryptography>=45.0",
+    # The official SDK owns both Responses and compatible Chat
+    # Completions request types; hand-written bodies previously drifted on the
+    # output-token field and are not acceptable at this outbound boundary.
+    "openai>=1.0",
+    # D4 keeps framework types behind the repository runtime port. Exact pins
+    # make the provider/tool/output and step-persistence contracts reviewable.
+    "pydantic-ai-slim[openai]==2.37.0",
+    "pydantic-ai-harness==0.28.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.17",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+]
+
+[project.scripts]
+incident-operations-persistence = "app.platform.persistence.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.14"
+files = [
+    "app/bootstrap",
+    "app/platform",
+    "app/domains",
+    "app/application",
+    "app/adapters",
+    "app/api/v1",
+]
+strict = true
+pretty = true
+show_error_codes = true

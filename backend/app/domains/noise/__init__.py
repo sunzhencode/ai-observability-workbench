@@ -1,0 +1,1 @@
+"""Deterministic notification-noise vocabulary."""
